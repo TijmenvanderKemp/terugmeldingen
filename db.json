@@ -3,8 +3,6 @@
   "info": {
     "title": "Terugmelding API voor registraties",
     "version": "1.0.9",
-    "description": "Welkom bij de Terugmelding API van het Kadaster! Via deze API kunt u terugmeldingen opvragen met filters (GET), een terugmelding indienen (POST) en 1 specifieke terugmelding opvragen (GET). Een terugmelding is een vermoeden van een onjuist gegeven in een (basis)registratie. Wanneer u vermoedt dat een gegeven niet klopt, kunt u een terugmelding indienen. Via de API kunt u ook de locatie, inhoud en status van alle actuele terugmeldingen inzien. De informatie in de API wordt continu bijgewerkt. Samen houden we de kwaliteit van (basis)registraties hoog!<p> Momenteel kunt u voor de volgende (basis)registraties een terugmelding indienen of actuele informatie over terugmeldingen opvragen via de API:<p> <ul> <li>Basisregistratie Adressen en Gebouwen (BAG)</li> <li>Basisregistratie Grootschalige Topografie (BGT)</li> <li> Basisregistratie Topografie (BRT)</li> <li> Kabels en Leidingen Informatie (KLIC) als pilot</li></ul> <p>De API is beveiligd door middel van een API-key. U kunt een API-key opvragen voor de acceptatieomgeving (voor test- en aansluitdoeleinden) en de productie omgeving. Vraag eenvoudig uw API-key aan via [API-key aanvraagformulier](https://formulieren.kadaster.nl/aanvragen_api_key_terumelding_api). U ontvangt dan binnen enkele werkdagen uw API-key. <p>Verder gelden de volgende voorwaarden <ol> <li>Het Kadaster behoudt zich het recht voor om u de toegang tot de API op elk moment zonder opgave van redenen te ontzeggen.</li> <li>Het Kadaster is niet aansprakelijk voor schade als gevolg van (het gebruik) van de API.</li> <li>Voor zover u door het gebruik van de API een product of dienst afneemt, zijn de [Algemene leveringsvoorwaarden](https://www.kadaster.nl/algemene-leveringsvoorwaarden) van toepassing.</li> </ol> <p>En de volgende aandachtspunten <ol> <li>De terugmeldingen worden beschikbaar gesteld als open data, vul dus geen persoonlijke gegevens in bij de omschrijving. Attendeer hier ook eventuele andere gebruikers op.</li> <li>De toegewezen bronhouder wordt automatisch door het systeem bepaald aan de hand van de locatie van de terugmelding, u hoeft de bronhouder dus niet mee te geven.</li> <li> Terugmelden op KLIC is alleen als pilot beschikbaar.</li> </ol> <p>Voor vragen over deze API kunt u terecht op het [Geoforum]( https://geoforum.nl/c/applicaties-en-diensten/terugmeldvoorzieningen) of mail naar bijgevoegd contactadres.</p>",
-    "termsOfService": "https://www.kadaster.nl/algemene-leveringsvoorwaarden",
     "contact": {
       "name": "Kadaster",
       "email": "terugmeldingapi@kadaster.nl"
@@ -22,85 +20,6 @@
   ],
   "paths": {
     "/v1/terugmeldingen": {
-      "get": {
-        "security": [
-          {
-            "apikeyAuth": []
-          }
-        ],
-        "summary": "Opvragen van terugmeldingen van registraties",
-        "responses": {
-          "200": {
-            "description": "OK: terugmeldingen in GeoJSON formaat",
-            "headers": {
-              "API-Version": {
-                "description": "Gebruikte versie",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TerugMeldingFeatureCollection"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: syntax onjuist"
-          },
-          "401": {
-            "description": "Unauthorized: geen of verkeerde apikey"
-          },
-          "204": {
-            "description": "No Content: geen terugmeldingen"
-          }
-        },
-        "tags": [
-          "Terugmelding API"
-        ],
-        "operationId": "getAllTerugMeldingenV1UsingGET",
-        "parameters": [
-          {
-            "name": "API-Version",
-            "in": "header",
-            "description": "Gebruikte versie",
-            "required": true,
-            "schema": {
-              "default": "1.0.0",
-              "type": "string"
-            }
-          },
-          {
-            "name": "peildatum",
-            "in": "query",
-            "description": "Terugmeldingen geregistreerd tot en met de ingevoerde datum, formaat yyyy-MM-dd",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "registratie",
-            "in": "query",
-            "description": "Registratie waar de terugmelding op geregistreerd is. 1 of meer mogelijk. Bij leeg laten worden alle registraties opgevraagd.",
-            "schema": {
-              "type": "string"
-            },
-            "example": "BRT,BAG,BGT,KLIC"
-          },
-          {
-            "name": "statusCode",
-            "in": "query",
-            "description": "De status van de terugmelding zoals bepaald door de bronhouder. 1 of meer mogelijk. Bij leeg laten worden alle statussen opgevraagd.",
-            "schema": {
-              "type": "string"
-            },
-            "example": "NIEUW,IN_ONDERZOEK,GOEDGEKEURD,GEPARKEERD,DOORGESTUURD,AFGEWEZEN,AFGEROND"
-          }
-        ]
-      },
       "post": {
         "security": [
           {
@@ -179,71 +98,6 @@
         ]
       }
     },
-    "/v1/terugmeldingen/{meldingsNummer}": {
-      "get": {
-        "security": [
-          {
-            "apikeyAuth": []
-          }
-        ],
-        "summary": "Opvragen van 1 terugmelding van een registratie",
-        "responses": {
-          "200": {
-            "description": "OK: 1 terugmelding in GeoJSON formaat",
-            "headers": {
-              "API-Version": {
-                "description": "Gebruikte versie",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeldingFeature"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: syntax onjuist"
-          },
-          "401": {
-            "description": "Unauthorized: geen of verkeerde apikey"
-          },
-          "404": {
-            "description": "Not Found: terugmelding bestaat niet"
-          }
-        },
-        "tags": [
-          "Terugmelding API"
-        ],
-        "operationId": "getTerugmeldingByMeldingsNummer",
-        "parameters": [
-          {
-            "name": "API-Version",
-            "in": "header",
-            "description": "Gebruikte versie",
-            "required": true,
-            "schema": {
-              "default": "1.0.0",
-              "type": "string"
-            }
-          },
-          {
-            "name": "meldingsNummer",
-            "in": "path",
-            "description": "Uniek meldingsnummer van de terugmelding",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ]
-      }
-    }
-  },
   "components": {
     "schemas": {
       "TerugMeldingFeatureCollection": {
@@ -370,4 +224,5 @@
       "description": "API voor opvragen van terugmeldingen en indienen van een terugmelding"
     }
   ]
+}
 }
