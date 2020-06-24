@@ -1,228 +1,81 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Terugmelding API voor registraties",
-    "version": "1.0.9",
-    "contact": {
-      "name": "Kadaster",
-      "email": "terugmeldingapi@kadaster.nl"
-    }
-  },
-  "servers": [
-    {
-      "url": "https://api.acceptatie.kadaster.nl/tms",
-      "description": "Acceptatie omgeving"
-    },
-    {
-      "url": "https://api.kadaster.nl/tms",
-      "description": "Productie omgeving"
-    }
-  ],
-  "paths": {
     "/v1/terugmeldingen": {
-      "post": {
-        "security": [
-          {
-            "apikeyAuth": []
-          }
-        ],
-        "summary": "Indienen van een terugmelding voor een registratie",
-        "responses": {
-          "200": {
-            "description": "OK: geregistreerde terugmelding",
-            "headers": {
-              "API-Version": {
-                "description": "Gebruikte versie",
-                "schema": {
-                  "type": "string"
+        "post": {
+            "security": [
+                {
+                    "apikeyAuth": []
                 }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TerugMeldingGeneriekResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request: syntax onjuist"
-          },
-          "401": {
-            "description": "Unauthorized: geen of verkeerde apikey"
-          }
-        },
-        "tags": [
-          "Terugmelding API"
-        ],
-        "operationId": "createTerugmeldingGenericV2UsingPOST",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "melding"
-                ],
-                "properties": {
-                  "melding": {
-                    "type": "object",
-                    "description": "Terugmelding in GeoJSON formaat conform bericht ‘TerugmeldingGeneriek’. Voor een (uitgebreid) voorbeeld zie: https://verbeterdekaart.kadaster.nl/api-doc/TerugmeldingGeneriekVoorbeeld.json",
-                    "example": "{\n   \"type\": \"FeatureCollection\",\n   \"name\": \"TerugmeldingGeneriek\",  \n   \"crs\": {\n        \"type\": \"name\",\n        \"properties\": {\n             \"name\": \"urn:ogc:def:crs:EPSG::28992\"\n           }\n   },\n   \"features\": [{\n        \"type\": \"Feature\",\n        \"geometry\": {\n             \"type\": \"Point\",\n             \"coordinates\": [194091.9996228,\n              465937.87473755]\n        },\n        \"properties\": {\n             \"registratie\": \"BRT\",\n             \"bron\": \"TMS Swagger API\",                            \n             \"email\": \"test@iets.nl\",\n             \"omschrijving\": \"Het voetpad is er niet\"\n        }\n  }]\n}\n"
-                  },
-                  "files": {
-                    "description": "1 of meer bijlagen ter ondersteuning van uw terugmelding. De volgende eisen zijn geldig: 1. Alleen de volgende extensies: bmp, jpg, jpeg, gif, png, pdf, doc, docx, odt, xls, xlsx, ods, ppt, pptx en odp. 2. Maximaal 5 bijlagen per terugmelding. 3. De bestandsnaam dient minimaal 3 en maximaal 100 karakters te zijn. 4. De bijlagen mogen gezamenlijk niet groter zijn dan 10 MB. 5. De bestandsnaam dient uniek te zijn per terugmelding.",
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
+            ],
+            "summary": "Indienen van een terugmelding voor een registratie",
+            "responses": {
+                "200": {
+                    "description": "OK: geregistreerde terugmelding",
+                    "headers": {
+                        "API-Version": {
+                            "description": "Gebruikte versie",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TerugMeldingGeneriekResponse"
+                            }
+                        }
                     }
-                  }
+                },
+                "400": {
+                    "description": "Bad Request: syntax onjuist"
+                },
+                "401": {
+                    "description": "Unauthorized: geen of verkeerde apikey"
                 }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "API-Version",
-            "in": "header",
-            "description": "Gebruikte versie",
-            "required": true,
-            "schema": {
-              "default": "1.0.0",
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-  "components": {
-    "schemas": {
-      "TerugMeldingFeatureCollection": {
-        "title": "TerugMeldingFeatureCollection",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "crs": {
-            "$ref": "#/components/schemas/TerugMeldingCrs"
-          },
-          "features": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MeldingFeature"
-            }
-          }
-        },
-        "required": [
-          "crs",
-          "features",
-          "name",
-          "type"
-        ]
-      },
-      "TerugMeldingGeneriekResponse": {
-        "title": "TerugMeldingGeneriekResponse",
-        "type": "object",
-        "properties": {
-          "meldingsNummerVolledig": {
-            "type": "string"
-          },
-          "reden": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "meldingsNummerVolledig",
-          "reden"
-        ]
-      },
-      "MeldingFeature": {
-        "title": "MeldingFeature",
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "geometry": {
-            "$ref": "#/components/schemas/TerugMeldingGeometry"
-          },
-          "properties": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "geometry",
-          "properties",
-          "type"
-        ]
-      },
-      "TerugMeldingCrs": {
-        "title": "TerugMeldingCrs",
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "properties": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "properties",
-          "type"
-        ]
-      },
-      "TerugMeldingGeometry": {
-        "title": "TerugMeldingGeometry",
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "coordinates": {
-            "type": "array",
-            "items": {
-              "type": "number",
-              "format": "double"
-            }
-          }
-        },
-        "required": [
-          "coordinates",
-          "type"
-        ]
-      }
-    },
-    "responses": {},
-    "parameters": {},
-    "examples": {},
-    "requestBodies": {},
-    "headers": {},
-    "securitySchemes": {
-      "apikeyAuth": {
-        "type": "apiKey",
-        "name": "apikey",
-        "in": "header"
-      }
-    },
-    "links": {},
-    "callbacks": {}
-  },
-  "tags": [
-    {
-      "name": "Terugmelding API",
-      "description": "API voor opvragen van terugmeldingen en indienen van een terugmelding"
+            },
+            "tags": [
+                "Terugmelding API"
+            ],
+            "operationId": "createTerugmeldingGenericV2UsingPOST",
+            "requestBody": {
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "melding"
+                            ],
+                            "properties": {
+                                "melding": {
+                                    "type": "object",
+                                    "description": "Terugmelding in GeoJSON formaat conform bericht ‘TerugmeldingGeneriek’. Voor een (uitgebreid) voorbeeld zie: https://verbeterdekaart.kadaster.nl/api-doc/TerugmeldingGeneriekVoorbeeld.json",
+                                    "example": "{\n   \"type\": \"FeatureCollection\",\n   \"name\": \"TerugmeldingGeneriek\",  \n   \"crs\": {\n        \"type\": \"name\",\n        \"properties\": {\n             \"name\": \"urn:ogc:def:crs:EPSG::28992\"\n           }\n   },\n   \"features\": [{\n        \"type\": \"Feature\",\n        \"geometry\": {\n             \"type\": \"Point\",\n             \"coordinates\": [194091.9996228,\n              465937.87473755]\n        },\n        \"properties\": {\n             \"registratie\": \"BRT\",\n             \"bron\": \"TMS Swagger API\",                            \n             \"email\": \"test@iets.nl\",\n             \"omschrijving\": \"Het voetpad is er niet\"\n        }\n  }]\n}\n"
+                                },
+                                "files": {
+                                    "description": "1 of meer bijlagen ter ondersteuning van uw terugmelding. De volgende eisen zijn geldig: 1. Alleen de volgende extensies: bmp, jpg, jpeg, gif, png, pdf, doc, docx, odt, xls, xlsx, ods, ppt, pptx en odp. 2. Maximaal 5 bijlagen per terugmelding. 3. De bestandsnaam dient minimaal 3 en maximaal 100 karakters te zijn. 4. De bijlagen mogen gezamenlijk niet groter zijn dan 10 MB. 5. De bestandsnaam dient uniek te zijn per terugmelding.",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "API-Version",
+                    "in": "header",
+                    "description": "Gebruikte versie",
+                    "required": true,
+                    "schema": {
+                        "default": "1.0.0",
+                        "type": "string"
+                    }
+                }
+            ]
+        }
     }
-  ]
-}
 }
